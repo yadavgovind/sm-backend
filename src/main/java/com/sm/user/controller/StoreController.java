@@ -8,13 +8,13 @@ import com.sm.user.repository.StoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/store")
@@ -30,6 +30,14 @@ private RegistrationSubscriptionRepository subscriptionRepository;
         if(store.getRegistrationSessionYear()==null){
             store.setRegistrationSessionYear(String.valueOf(LocalDate.now().getYear()));
         }
+        if(StringUtils.isEmpty(store.getStoreId())){
+            store.setStoreId(UUID.randomUUID().toString());
+        }
+        store.getRoomDetails().stream().forEach(room->{
+            if(StringUtils.isEmpty(room.getRoomId())){
+                room.setRoomId(UUID.randomUUID().toString());
+            }
+        });
         Store store1= storeRepository.findByStoreIdOrPhone(store.getStoreId(),store.getPhone());
       if(ObjectUtils.isEmpty(store1)) {
           store.setCreatedDateTimeStamp(LocalDateTime.now());
@@ -46,6 +54,18 @@ private RegistrationSubscriptionRepository subscriptionRepository;
         store.setDocVerNbr(store1.getDocVerNbr()+1);
         store.setUpdatedTimeStamp(LocalDateTime.now());
         return  ResponseEntity.ok( storeRepository.save(store));
+    }
+
+
+    @GetMapping("/allstore")
+    public ResponseEntity<List<Store>> stores(){
+        return ResponseEntity.ok(storeRepository.findAll());
+    }
+
+
+    @GetMapping("/hello")
+    public ResponseEntity<String> hello(){
+        return ResponseEntity.ok("Hello working");
     }
 
 
