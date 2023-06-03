@@ -5,6 +5,7 @@ import com.sm.user.document.RegistrationSubscription;
 import com.sm.user.document.Store;
 import com.sm.user.repository.RegistrationSubscriptionRepository;
 import com.sm.user.repository.StoreRepository;
+import com.sm.user.service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
@@ -25,6 +26,8 @@ public class StoreController {
     private StoreRepository storeRepository;
 @Autowired
 private RegistrationSubscriptionRepository subscriptionRepository;
+@Autowired
+    OtpService otpService;
 
 
     @PostMapping("/")
@@ -68,6 +71,12 @@ private RegistrationSubscriptionRepository subscriptionRepository;
     @GetMapping("/hello")
     public ResponseEntity<String> hello(){
         return ResponseEntity.ok("Hello working");
+    }
+
+    @GetMapping("/generateOtp")
+    public ResponseEntity<String> generateOtp(@RequestParam String mob){
+        int otp = otpService.getOtp(mob);
+        return ResponseEntity.ok("Generated Otp : "+otp);
     }
 
 

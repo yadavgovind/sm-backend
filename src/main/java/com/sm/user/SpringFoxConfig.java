@@ -20,7 +20,7 @@ public class SpringFoxConfig {
 
     @Bean
     public Docket postsApi() {
-        return new Docket(DocumentationType.SWAGGER_2).groupName("public-api")
+        return new Docket(DocumentationType.SWAGGER_12).groupName("public-api")
                 .apiInfo(apiInfo()).select().paths(postPaths()).build();
     }
 
@@ -35,6 +35,6 @@ public class SpringFoxConfig {
                 .description("Store management API reference for developers")
                 .termsOfServiceUrl("http://localhost:8080.com")
                 .contact("govind.yadav@gmail.com").license("NA")
-                .licenseUrl("ovind.yadav@gmail.com").version("1.0").build();
+                .licenseUrl("govind.yadav@gmail.com").version("1.0").build();
     }
 }

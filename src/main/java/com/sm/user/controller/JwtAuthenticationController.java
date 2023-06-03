@@ -2,6 +2,7 @@ package com.sm.user.controller;
 
 import com.sm.user.document.extention.JwtRequest;
 import com.sm.user.document.extention.JwtResponse;
+import com.sm.user.service.OtpService;
 import com.sm.user.token.JwtTokenUtil;
 import com.sm.user.token.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "*",exposedHeaders = "*",allowedHeaders = "*")
+@RequestMapping("/api")
 public class JwtAuthenticationController {
 
 	@Autowired
@@ -31,10 +33,16 @@ public class JwtAuthenticationController {
 
 	@Autowired
 	private JwtUserDetailsService userDetailsService;
+	@Autowired
+	private OtpService otpService;
 
 	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-
+		authenticationRequest.setPassword("sandeep");
+		Integer otp=  otpService.getOtp(authenticationRequest.getUsername());
+		if(otp!=Integer.valueOf(authenticationRequest.getOtp())){
+		throw new Exception("Otp is not verified or expired !");
+		}
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
 		final UserDetails userDetails = userDetailsService
