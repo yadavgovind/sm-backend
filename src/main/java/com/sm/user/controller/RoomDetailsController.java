@@ -18,6 +18,8 @@ import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/api/lots")
+
+@CrossOrigin(origins = "*",exposedHeaders = "*",allowedHeaders = "*")
 public class RoomDetailsController {
 
     @Autowired

@@ -18,6 +18,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/store")
+
+@CrossOrigin(origins = "*",exposedHeaders = "*",allowedHeaders = "*")
 public class StoreController {
 @Autowired
     private StoreRepository storeRepository;
