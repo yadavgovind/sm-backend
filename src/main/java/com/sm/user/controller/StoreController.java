@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/store")
+@RequestMapping("/api")
 
 @CrossOrigin(origins = "*",exposedHeaders = "*",allowedHeaders = "*")
 public class StoreController {
@@ -30,7 +30,7 @@ private RegistrationSubscriptionRepository subscriptionRepository;
     OtpService otpService;
 
 
-    @PostMapping("/")
+    @PostMapping("/open/store")
     public ResponseEntity<Store> create(@RequestBody Store store){
         if(store.getRegistrationSessionYear()==null){
             store.setRegistrationSessionYear(String.valueOf(LocalDate.now().getYear()));
@@ -73,7 +73,7 @@ private RegistrationSubscriptionRepository subscriptionRepository;
         return ResponseEntity.ok("Hello working");
     }
 
-    @GetMapping("/generateOtp")
+    @GetMapping("/open/generateOtp")
     public ResponseEntity<String> generateOtp(@RequestParam String mob){
         int otp = otpService.generateOTP(mob);
         return ResponseEntity.ok("Generated Otp : "+otp);

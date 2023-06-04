@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "*",exposedHeaders = "*",allowedHeaders = "*")
-@RequestMapping("/api")
+@RequestMapping("/api/open")
 public class JwtAuthenticationController {
 
 	@Autowired
