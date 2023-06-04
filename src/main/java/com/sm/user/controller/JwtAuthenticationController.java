@@ -40,9 +40,11 @@ public class JwtAuthenticationController {
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 		authenticationRequest.setPassword("sandeep");
 		Integer otp=  otpService.getOtp(authenticationRequest.getUsername());
-		if(otp!=Integer.valueOf(authenticationRequest.getOtp())){
+		if(!String.valueOf(otp).equals(authenticationRequest.getOtp())){
+			otpService.clearOTP(authenticationRequest.getUsername());
 		throw new Exception("Otp is not verified or expired !");
 		}
+		otpService.clearOTP(authenticationRequest.getUsername());
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
 		final UserDetails userDetails = userDetailsService

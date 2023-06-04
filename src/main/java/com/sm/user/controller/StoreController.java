@@ -75,7 +75,7 @@ private RegistrationSubscriptionRepository subscriptionRepository;
 
     @GetMapping("/generateOtp")
     public ResponseEntity<String> generateOtp(@RequestParam String mob){
-        int otp = otpService.getOtp(mob);
+        int otp = otpService.generateOTP(mob);
         return ResponseEntity.ok("Generated Otp : "+otp);
     }
 

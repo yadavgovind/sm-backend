@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface RoomLotDetailsRepository extends MongoRepository<RoomLotDetails,String> {
 
-    List<RoomLotDetails> findAllByRoomIdAndStoreIdAndSession( String roomId, String storeId, String sessionYear);
+    List<RoomLotDetails> findAllByRoomNoAndStoreIdAndSession( String roomId, String storeId, String sessionYear);
     List<RoomLotDetails> findAllByStoreIdAndSession(  String storeId, String sessionYear);
  }
