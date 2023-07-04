@@ -12,6 +12,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+
+@CrossOrigin(origins = "*",exposedHeaders = "*",allowedHeaders = "*")
 public class ProductInController {
     @Autowired
     private ProductInRepository productInRepository;
@@ -22,7 +24,7 @@ public class ProductInController {
         return ResponseEntity.ok(productInRepository.save(productIn));
     }
 
-    @GetMapping("/productIn/lookup}")
+    @GetMapping("/productIn/lookup")
     public  ResponseEntity<List<ProductIn>> getProductDetailsByLotNo(@RequestParam(required = false) String lotId
     ,@RequestParam(required = false) String storeId,  @RequestParam(required = false) String roomId){
     List<ProductIn> productIns= new ArrayList<>();

@@ -6,15 +6,21 @@ import com.sm.user.repository.RoomLotDetailsRepository;
 import com.sm.user.repository.StoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/api/lots")
+
+@CrossOrigin(origins = "*",exposedHeaders = "*",allowedHeaders = "*")
 public class RoomDetailsController {
 
     @Autowired
@@ -29,12 +35,13 @@ public class RoomDetailsController {
         // room loop
         store.getRoomDetails().stream().forEach(roomDetails -> {
 //row loop
-            IntStream.range(1, roomDetails.getFloorInRoom()).forEach(row -> {
+            IntStream.range(0, roomDetails.getFloorInRoom()).forEach(row -> {
 //col loop
-                IntStream.range(1, roomDetails.getColumnsInRoom()).forEach(col -> {
+                IntStream.range(0, roomDetails.getColumnInRoom()).forEach(col -> {
                     String lotNo = "R-" + roomDetails.getRoomNo() + "-F-" + row + "-C-" + col + "-S-" + store.getRegistrationSessionYear() + "-S-" + storeId;
                     RoomLotDetails roomLotDetails = new RoomLotDetails();
                     roomLotDetails.setFloorNo(row);
+                    roomLotDetails.setRoomNo(roomDetails.getRoomNo());
                     roomLotDetails.setGeneratedLotName(lotNo);
                     roomLotDetails.setLotCapacity(roomDetails.getPerLotCapacity());
                     roomLotDetails.setRoomId(roomDetails.getRoomId());
@@ -48,5 +55,37 @@ public class RoomDetailsController {
         roomLotDetailsRepository.saveAll(roomLotDetailsList);
         return ResponseEntity.ok("Lot generated successfully" + roomLotDetailsList.size());
     }
+
+
+    @GetMapping("/lotDetails/{roomNo}/store/{storeId}")
+    public ResponseEntity<List<RoomLotDetails>>  getRoomLotDetails(@PathVariable String roomNo,@PathVariable String storeId, @RequestParam(required = false) String session){
+
+        if(StringUtils.isEmpty(session)){
+            session=String.valueOf( LocalDate.now().getYear());
+        }
+        List<RoomLotDetails> roomLots = roomLotDetailsRepository.findAllByRoomNoAndStoreIdAndSession(roomNo, storeId, session);
+        if(CollectionUtils.isEmpty(roomLots)){
+            generateLots(storeId);
+            roomLots = roomLotDetailsRepository.findAllByRoomNoAndStoreIdAndSession(roomNo, storeId, session);
+        }
+        return ResponseEntity.ok(roomLots);
+
+    }
+
+
+    @GetMapping("/available/store/{storeId}")
+    public ResponseEntity<Map<String, List<RoomLotDetails>>>  getAvailable(@PathVariable String storeId, @RequestParam(required = false) String session){
+
+        if(StringUtils.isEmpty(session)){
+            session=String.valueOf( LocalDate.now().getYear());
+        }
+        List<RoomLotDetails> roomLotDetails = roomLotDetailsRepository.findAllByStoreIdAndSession(storeId, session);
+
+        Map<String, List<RoomLotDetails>> availableRooms = roomLotDetails.stream().filter(item -> StringUtils.isEmpty(item.getAllocatedCustomer())).collect(Collectors.groupingBy(RoomLotDetails::getRoomNo));
+        return ResponseEntity.ok(availableRooms);
+
+    }
+
+
 
 }

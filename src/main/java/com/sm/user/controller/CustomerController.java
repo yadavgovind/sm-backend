@@ -12,6 +12,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+
+@CrossOrigin(origins = "*",exposedHeaders = "*",allowedHeaders = "*")
 public class CustomerController {
     @Autowired
     private CustomerRepository customerRepository;
